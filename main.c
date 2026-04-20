@@ -2,12 +2,12 @@
 #include "arena.h"
 #include <ctype.h>
 #include <errno.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
-
-#define BUFFER_SIZE 1024
 
 #define cstr_to_sv(s) ((SV){s, strlen(s)})
 
@@ -124,14 +124,11 @@ int exec_command(Arena *arena, SV command)
 
 int main(void)
 {
-    char buffer[BUFFER_SIZE] = {0};
     Arena command_arena = {0};
     while(!feof(stdin))
     {
-        printf("yash> ");
-        fflush(stdin);
-        fgets(buffer, sizeof(buffer), stdin);
-        SV command = sv_trim_right(cstr_to_sv(buffer));
+        char *buffer = readline("yash> ");
+        SV command = cstr_to_sv(buffer);
         if (sv_cmp(command, cstr_to_sv("exit")))
         {
             break;
@@ -145,6 +142,7 @@ int main(void)
                 continue;
             }
         }
+        free(buffer);
         arena_reset(&command_arena);
     }
     arena_free(&command_arena);
