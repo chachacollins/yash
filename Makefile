@@ -1,4 +1,4 @@
-CXX=clang++
+CXX=g++
 CFLAGS=-Wall -Wextra -ggdb -std=c++23
 LDFLAGS=-lreadline
 yash: main.cpp

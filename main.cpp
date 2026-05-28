@@ -8,19 +8,19 @@
 #include <ranges>
 #include <vector>
 
-std::vector<std::string> split_by_del(const std::string& s1, const std::string& del)
+std::vector<const char*> split_args(const std::string& s1, const std::string& del = " ")
 {
     return std::views::split(s1, del)
            | std::views::transform([](const auto& x) { return std::string{x.begin(), x.end()};})
-           | std::ranges::to<std::vector<std::string>>();
+           | std::ranges::to<std::vector<std::string>>()
+           | std::views::transform([](const auto& x) { return x.c_str(); })
+           | std::ranges::to<std::vector<const char*>>();
 }
 
 int exec_command(const std::string& command)
 {
     int status = 0;
-    auto args = split_by_del(command, " ")
-                | std::views::transform([](const auto& x) {return x.c_str();})
-                | std::ranges::to<std::vector<const char*>>();
+    auto args = split_args(command);
     args.push_back(nullptr);
     pid_t pid = fork();
     if (pid < 0)
