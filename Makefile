@@ -1,11 +1,8 @@
-CC=gcc
-CFLAGS=-Wall -Wextra -ggdb
-SRCS=$(wildcard *.c)
-OBJS=$(SRCS:.c=.o)
+CXX=clang++
+CFLAGS=-Wall -Wextra -ggdb -std=c++23
 LDFLAGS=-lreadline
-
-yash: $(OBJS) 
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+yash: main.cpp
+	$(CXX) $(CFLAGS) -o yash main.cpp $(LDFLAGS)
 
 .PHONY: clean
 clean:
